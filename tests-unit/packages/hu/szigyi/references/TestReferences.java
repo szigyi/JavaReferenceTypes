@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.lang.ref.PhantomReference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -80,5 +82,16 @@ public class TestReferences {
 //		}
 		
 		assertThat(weakRef.get(), nullValue());
+	}
+
+	@Test
+	public void whenPhantomReference_thenGCReclaims() {
+		ReferenceQueue<RefClass> queue = new ReferenceQueue<>();
+		PhantomReference<RefClass> phantomRef = new PhantomReference<>(new RefClass(), queue);
+		
+		System.gc();
+		
+		assertThat(queue.poll(), nullValue());
+		assertThat(phantomRef.get(), nullValue());
 	}
 }
