@@ -55,4 +55,15 @@ public void whenWeakReference_thenGCReclaims() {
 	
 	assertThat(weakRef.get(), nullValue());
 }
+
+@Test
+public void whenPhantomReference_thenGCReclaims() {
+	ReferenceQueue<RefClass> queue = new ReferenceQueue<>();
+	PhantomReference<RefClass> phantomRef = new PhantomReference<>(new RefClass(), queue);
+	
+	System.gc();
+	
+	assertThat(queue.poll(), nullValue());
+	assertThat(phantomRef.get(), nullValue());
+}
 ```
